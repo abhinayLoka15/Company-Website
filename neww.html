@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loka15 Studios | The Cinematic Future</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --accent: #d8b4fe;
+            --bg-dark: #000000;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, .font-space {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* --- BACKGROUND ENGINE --- */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .background-dimmer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- SCROLL ARCHITECTURE --- */
+        .section-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+        }
+
+        section {
+            min-height: 100vh;
+            padding: 10vh 5vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* --- CUSTOM COMPONENTS --- */
+        .brand-title {
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            background: linear-gradient(180deg, #FFFFFF 30%, #555 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 0.9;
+        }
+
+        .nav-fixed {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 1.5rem;
+            padding: 0.75rem 2rem;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+        }
+
+        .nav-link {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #888;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: white;
+        }
+
+        /* Project Grid Enhancement */
+        .project-card {
+            position: relative;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .project-card img, .project-card .vid-placeholder {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .project-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .project-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .project-card:hover .project-overlay {
+            opacity: 1;
+        }
+
+        .modal-active #canvas-container {
+    filter: blur(20px);
+    transition: filter 0.5s ease;
+}
+        /* --- VISION ENGINE STYLING --- */
+        .vision-textarea {
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            color: white;
+            font-size: 1.1rem;
+            min-height: 250px;
+            resize: none;
+            outline: none;
+            transition: border-color 0.4s;
+        }
+
+        .vision-textarea:focus {
+            border-color: var(--accent);
+        }
+
+        #vision-result {
+            margin-top: 2rem;
+            padding: 2rem;
+            border-left: 2px solid var(--accent);
+            background: rgba(216, 180, 254, 0.05);
+            display: none;
+        }
+
+        /* --- ANIMATIONS --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .scanline {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            top: 0;
+            animation: scan 4s linear infinite;
+        }
+
+        @keyframes scan {
+            from { top: 0%; }
+            to { top: 100%; }
+        }
+
+    </style>
+</head>
+<!-- VIDEO MODAL -->
+<div id="video-modal" class="fixed inset-0 bg-black/80 backdrop-blur-xl hidden items-center justify-center z-[999]">
+    
+    <div class="relative w-[90%] max-w-5xl">
+        
+        <!-- Close Button -->
+        <button id="close-modal" class="absolute -top-12 right-0 text-white text-2xl">✕</button>
+        
+        <!-- Video Player -->
+        <video id="modal-video" class="w-full rounded-xl" controls>
+            <source id="modal-source" src="" type="video/mp4">
+        </video>
+        
+    </div>
+</div>
+<!-- IMAGE GALLERY MODAL -->
+<div id="gallery-modal" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-center justify-center z-[999]">
+
+    <button id="close-gallery" class="absolute top-10 right-10 text-white text-3xl z-10">✕</button>
+
+    <!-- Left Arrow -->
+    <button id="prev-btn" class="absolute left-10 text-white text-4xl z-10">❮</button>
+
+    <!-- Image -->
+    <img id="gallery-image" class="max-w-[90%] max-h-[80vh] rounded-xl shadow-2xl">
+
+    <!-- Right Arrow -->
+    <button id="next-btn" class="absolute right-10 text-white text-4xl z-10">❯</button>
+
+</div>
+<body>
+
+    <div id="canvas-container"></div>
+    <div class="background-dimmer"></div>
+
+    <nav class="nav-fixed">
+        <a href="#hero" class="nav-link active">Home</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#showreel" class="nav-link">Our Projects</a>
+        <a href="#vision" class="nav-link">Vision</a>
+        <a href="#contact" class="nav-link">Contact</a>
+    </nav>
+
+    <div class="section-container">
+        
+        <section id="hero" class="items-center text-center">
+            <div class="reveal">
+                <p class="text-xs tracking-[0.5em] text-gray-500 uppercase mb-4">Establishing a new standard</p>
+                <h1 class="brand-title">LOKA15<br>STUDIOS</h1>
+                <div class="flex justify-center gap-4 mt-8">
+                    <div class="h-[1px] w-12 bg-white/20 self-center"></div>
+                    <span class="text-sm tracking-widest text-gray-400 uppercase">The Cinematic Future</span>
+                    <div class="h-[1px] w-12 bg-white/20 self-center"></div>
+                </div>
+            </div>
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-20 animate-bounce">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M7 13L12 18L17 13M7 6L12 11L17 6" />
+                </svg>
+            </div>
+        </section>
+
+        <section id="about" class="bg-black/40 backdrop-blur-md">
+            <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-20 items-center">
+                <div class="reveal">
+                    <h2 class="text-5xl font-bold mb-8">What We Do</h2>
+                    <p class="text-xl text-gray-400 mb-6">
+                        Loka15 Studios is a film production company focused on storytelling through advanced AI workflows. Beyond technology, our in-house creative directors dont just guide the process—they build the heart of every story we tell.
+                    </p>
+                    <!-- <div class="grid grid-cols-2 gap-8 mt-12">
+                        <div>
+                            <h4 class="text-white font-bold text-2xl">10+</h4>
+                            <p class="text-gray-500 text-sm uppercase tracking-tighter">Global IPs</p>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-bold text-2xl">4K+</h4>
+                            <p class="text-gray-500 text-sm uppercase tracking-tighter">Render Hours</p>
+                        </div>
+                    </div> -->
+                </div>
+                <div class="glass-panel p-12 reveal">
+                    <h3 class="text-2xl font-semibold mb-4 text-purple-300">Our Core Pillars</h3>
+                    <ul class="space-y-6">
+                        <li class="flex gap-4">
+                            <span class="text-white/20 font-bold text-4xl italic">01</span>
+                            <div>
+                                <p class="font-bold">Story-First Narrative
+                                    </p>
+                                <p class="text-gray-500 text-sm">Stories lead—technology follows.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="text-white/20 font-bold text-4xl italic">02</span>
+                            <div>
+                                <p class="font-bold">    
+                                    Systemized AI Workflows
+                                    </p>
+                                <p class="text-gray-500 text-sm">Precision-driven processes powering scalable creativity.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="text-white/20 font-bold text-4xl italic">03</span>
+                            <div>
+                                <p class="font-bold">    
+                                    Adaptive to Emerging Tech
+                                    </p>
+                                <p class="text-gray-500 text-sm">Built to evolve with every new wave of innovation.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="vision-mission" class="bg-black/60">
+            <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+                
+                <!-- Vision -->
+                <div class="text-center md:text-left reveal">
+                    <h2 class="text-5xl font-bold mb-6">Our Vision</h2>
+                    <p class="text-xl text-gray-400">
+                        To lead the future of the storytelling landscape.
+                    </p>
+                </div>
+        
+                <!-- Mission -->
+                <div class="text-center md:text-left reveal">
+                    <h2 class="text-5xl font-bold mb-6">Our Mission</h2>
+                    <p class="text-xl text-gray-400">
+                        To build versatile Indian stories at 10x the speed of traditional production houses.
+                    </p>
+                </div>
+        
+            </div>
+        </section>
+
+        <section id="showreel">
+            <div class="max-w-7xl mx-auto w-full">
+                <div class="flex justify-between items-end mb-16 reveal">
+                    <div>
+                        <h2 class="text-6xl font-bold tracking-tighter">Our Projects</h2>
+                    </div>
+                    <p class="max-w-xs text-gray-500 text-right">
+                        A curation of our recent ventures into animation and cinematic storytelling.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div class="project-card reveal" data-video="meelo.mp4">
+                        <video class="w-full h-full object-cover" muted loop playsinline poster="meelopost.jpeg">
+                            <source src="meelo.mp4" type="video/mp4">
+                        </video>
+                    
+                        <div class="project-overlay">
+                            <h3 class="text-2xl font-bold">Meelo & The Cloud Factory</h3>
+                            <p class="text-gray-400 text-sm">Animation / Kids IP</p>
+                        </div>
+                    </div>
+                    <div class="project-card reveal" id="taktak-card">
+    
+                        <img src="1.jpeg" class="w-full h-full object-cover">
+                    
+                        <div class="project-overlay">
+                            <h3 class="text-2xl font-bold">Tak Tak Town</h3>
+                            <p class="text-gray-400 text-sm">Animation / Series</p>
+                        </div>
+                    </div>
+                    <!-- <div class="project-card reveal">
+                        <div class="vid-placeholder bg-zinc-900 border-2 border-dashed border-white/5 flex items-center justify-center">
+                            <span class="text-xs uppercase tracking-widest text-white/20">Untitled Alpha [In Prod]</span>
+                        </div>
+                        <div class="project-overlay">
+                            <h3 class="text-2xl font-bold">Project Alpha</h3>
+                            <p class="text-gray-400 text-sm">Confidential Development</p>
+                        </div>
+                    </div>
+                    <div class="project-card reveal" style="transition-delay: 0.1s">
+                        <div class="vid-placeholder bg-zinc-800 border-2 border-dashed border-white/5 flex items-center justify-center">
+                            <span class="text-xs uppercase tracking-widest text-white/20">Untitled Beta [In Prod]</span>
+                        </div>
+                        <div class="project-overlay">
+                            <h3 class="text-2xl font-bold">Project Beta</h3>
+                            <p class="text-gray-400 text-sm">Confidential Development</p>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </section>
+
+        
+
+        <section id="contact" class="items-center justify-center text-center">
+            <div class="reveal">
+                <h2 class="text-7xl font-bold mb-8">Let's Create.</h2>
+                <a href="mailto:muralidhar@loka15.com" class="text-2xl text-gray-400 hover:text-white transition-colors border-b border-white/10 pb-2">
+                    muralidhar@loka15.com
+                </a>
+                <div class="mt-20 flex gap-8 justify-center opacity-40">
+                    <span class="text-xs uppercase tracking-widest cursor-pointer hover:opacity-100">Instagram</span>
+                    <span class="text-xs uppercase tracking-widest cursor-pointer hover:opacity-100">LinkedIn</span>
+                    <span class="text-xs uppercase tracking-widest cursor-pointer hover:opacity-100">Vimeo</span>
+                </div>
+            </div>
+        </section>
+
+        <footer class="py-12 px-10 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-600 uppercase tracking-widest border-t border-white/5 bg-black">
+            <p>© 2026 Loka15 Studios Pvt Ltd</p>
+            <p>Crafted in the Infinite Screen</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- 1. THREE.JS ENGINE ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.02);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 0, 12);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Curved Imax Mesh
+        const geometry = new THREE.CylinderGeometry(10, 10, 7, 64, 1, true, -Math.PI/2.5, Math.PI/1.25);
+        
+        const screenShader = {
+            uniforms: {
+                uTime: { value: 0 },
+                uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform float uTime;
+                varying vec2 vUv;
+
+                float random(vec2 st) { return fract(sin(dot(st.xy, vec2(12.9898,78.233)))* 43758.5453123); }
+
+                void main() {
+                    vec2 uv = vUv;
+                    float t = uTime * 0.2;
+                    
+                    // Procedural aurora effect
+                    float n = sin(uv.x * 10.0 + t) * cos(uv.y * 5.0 - t);
+                    vec3 col1 = vec3(0.05, 0.02, 0.1); // Deep purple
+                    vec3 col2 = vec3(0.1, 0.3, 0.5);   // Blue
+                    
+                    vec3 finalCol = mix(col1, col2, n * 0.5 + 0.5);
+                    finalCol += random(uv + t) * 0.02; // Grain
+                    
+                    // Vignette
+                    float dist = distance(uv, vec2(0.5));
+                    finalCol *= smoothstep(0.8, 0.2, dist);
+
+                    gl_FragColor = vec4(finalCol, 1.0);
+                }
+            `
+        };
+
+        const material = new THREE.ShaderMaterial({
+            uniforms: screenShader.uniforms,
+            vertexShader: screenShader.vertexShader,
+            fragmentShader: screenShader.fragmentShader,
+            side: THREE.DoubleSide,
+            transparent: true
+        });
+
+        const screenMesh = new THREE.Mesh(geometry, material);
+        screenMesh.rotation.y = Math.PI;
+        scene.add(screenMesh);
+
+        // Floor Grid
+        const grid = new THREE.GridHelper(50, 50, 0x222222, 0x111111);
+        grid.position.y = -3.5;
+        scene.add(grid);
+
+        // --- 2. GSAP SCROLL ENGINE ---
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Reveal animations
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach(el => {
+            gsap.to(el, {
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                ease: "power4.out"
+            });
+        });
+
+        // Background reactivity to scroll
+        gsap.to(screenMesh.rotation, {
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1
+            },
+            y: Math.PI + 0.5
+        });
+
+        // Navigation Highlight
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // --- 3. VISION AI ENGINE ---
+// --- 3. VISION AI ENGINE (Fixed Syntax) ---
+// const btnVision = document.getElementById('btn-generate-vision');
+// const visionInput = document.getElementById('vision-input');
+// const visionResult = document.getElementById('vision-result');
+// const apiKey = ""; // <--- INSERT YOUR GEMINI API KEY HERE
+
+// async function generateVisionWithRetry(prompt, retries = 5) {
+//     // API endpoint for Gemini 2.5 Flash
+//     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+    
+//     const systemInstruction = "You are a visionary Film Director at Loka15 Studios. The user will provide a raw, short concept. Expand it into a cinematic pitch. Provide three sections: 1. 'Logline:', 2. 'Visual Tone:', 3. 'Camera Direction:'. Keep it highly visual, punchy, and professional. Output directly in HTML using <p> and <strong> tags. Do not use markdown blocks or backticks.";
+   
+//     const payload = {
+//         contents: [{ parts: [{ text: prompt }] }],
+//         systemInstruction: { parts: [{ text: systemInstruction }] }
+//     };
+   
+//     // FIXED: The array must contain these numbers to handle retries
+//     const delays =[1000, 2000, 4000, 8000, 16000];
+
+//     for (let i = 0; i <= retries; i++) {
+//         try {
+//             const response = await fetch(url, {
+//                 method: 'POST',
+//                 headers: { 'Content-Type': 'application/json' },
+//                 body: JSON.stringify(payload)
+//             });
+           
+//             if (!response.ok) throw new Error("HTTP error " + response.status);
+           
+//             const data = await response.json();
+            
+//             // FIXED: Safer way to access the text without causing "?.?." errors
+//             if (data.candidates && data.candidates && data.candidates.content) {
+//                 return data.candidates.content.parts.text;
+//             }
+            
+//             return "No vision generated.";
+//         } catch (error) {
+//             console.error("Attempt " + (i + 1) + " failed:", error);
+//             if (i === retries) throw error;
+//             // Wait for the duration specified in the delays array
+//             await new Promise(res => setTimeout(res, delays[i]));
+//         }
+//     }
+// }
+
+// btnVision.addEventListener('click', async () => {
+//     const prompt = visionInput.value.trim();
+//     if (!prompt) return;
+
+//     // UI Loading State
+//     btnVision.innerText = "Synthesizing Sequence...";
+//     btnVision.disabled = true;
+//     visionResult.style.display = "none";
+
+//     try {
+//         const resultHtml = await generateVisionWithRetry(prompt);
+        
+//         visionResult.style.display = "block";
+//         visionResult.innerHTML = `
+//             <p class="text-xs font-bold text-purple-400 uppercase mb-4">Synthesis Complete</p>
+//             <div class="prose prose-invert max-w-none text-gray-300">
+//                 ${resultHtml}
+//             </div>
+//         `;
+        
+//         // GSAP Animation
+//         gsap.fromTo(visionResult, 
+//             { opacity: 0, y: 20 }, 
+//             { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
+//         );
+
+//     } catch (err) {
+//         visionResult.style.display = "block";
+//         visionResult.innerHTML = `
+//             <p class="text-red-400 font-bold uppercase text-xs">Synthesis Interrupted</p>
+//             <p class="text-xs text-gray-500 mt-2">Check API Key or Network Connection.</p>
+//         `;
+//     } finally {
+//         btnVision.innerText = "Initiate Synthesis";
+//         btnVision.disabled = false;
+//     }
+// });
+
+        // --- 4. RENDER LOOP ---
+        const clock = new THREE.Clock();
+        let mouseX = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = clock.getElapsedTime();
+            
+            screenShader.uniforms.uTime.value = time;
+            
+            // Subtle mouse parallax
+            screenMesh.rotation.y += (Math.PI + mouseX * 0.1 - screenMesh.rotation.y) * 0.05;
+            
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    // VIDEO MODAL FUNCTIONALITY
+const modal = document.getElementById('video-modal');
+const modalVideo = document.getElementById('modal-video');
+const modalSource = document.getElementById('modal-source');
+const closeModal = document.getElementById('close-modal');
+
+const cards = document.querySelectorAll('.project-card');
+
+cards.forEach(card => {
+    card.addEventListener('click', () => {
+    const videoSrc = card.getAttribute('data-video');
+    
+    modalSource.src = videoSrc;
+    modalVideo.load();
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    document.body.classList.add('modal-active'); // ✅ ADD HERE
+
+    modalVideo.play();
+
+    gsap.fromTo(modalVideo, 
+        { scale: 0.8, opacity: 0 }, 
+        { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" }
+    );
+});
+});
+
+closeModal.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    modalVideo.pause();
+
+    document.body.classList.remove('modal-active'); // ✅ ADD HERE
+});
+
+// Close on background click
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        modalVideo.pause();
+
+        document.body.classList.remove('modal-active'); // ✅ ADD HERE
+    }
+});
+
+// IMAGE GALLERY LOGIC
+const galleryModal = document.getElementById('gallery-modal');
+const galleryImage = document.getElementById('gallery-image');
+const closeGallery = document.getElementById('close-gallery');
+const nextBtn = document.getElementById('next-btn');
+const prevBtn = document.getElementById('prev-btn');
+
+const taktakCard = document.getElementById('taktak-card');
+
+// Your images here
+const images = [
+    "1.jpeg",
+    "2.jpeg",
+    "3.jpeg",
+    "4.jpeg",
+    "5.jpeg",
+    "6.jpeg",
+    "7.jpeg"
+];
+
+let currentIndex = 0;
+
+// OPEN
+taktakCard.addEventListener('click', () => {
+    // ❌ CLOSE VIDEO MODAL IF OPEN
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    modalVideo.pause();
+
+    // ✅ OPEN GALLERY
+    currentIndex = 0;
+    galleryImage.src = images[currentIndex];
+
+    galleryModal.classList.remove('hidden');
+    galleryModal.classList.add('flex');
+
+    document.body.classList.add('modal-active');
+});
+
+// CLOSE
+closeGallery.addEventListener('click', () => {
+    galleryModal.classList.add('hidden');
+    galleryModal.classList.remove('flex');
+
+    document.body.classList.remove('modal-active');
+
+    // ✅ Ensure video modal is not lingering
+    modalVideo.pause();
+});
+
+// NEXT
+nextBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % images.length;
+    galleryImage.src = images[currentIndex];
+});
+
+// PREV
+prevBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    galleryImage.src = images[currentIndex];
+});
+
+// CLOSE on background click
+galleryModal.addEventListener('click', (e) => {
+    if (e.target === galleryModal) {
+        galleryModal.classList.add('hidden');
+        galleryModal.classList.remove('flex');
+        document.body.classList.remove('modal-active');
+    }
+});
+    </script>
+</body>
+</html>
