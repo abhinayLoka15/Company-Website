@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loka15 Studios | The Cinematic Future</title>
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@300;500;700&display=swap"
+        rel="stylesheet">
 
     <style>
         :root {
@@ -35,7 +38,10 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        h1, h2, h3, .font-space {
+        h1,
+        h2,
+        h3,
+        .font-space {
             font-family: 'Space Grotesk', sans-serif;
         }
 
@@ -56,7 +62,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
             z-index: 1;
             pointer-events: none;
         }
@@ -107,7 +113,7 @@
             display: flex;
             gap: 1.5rem;
             padding: 0.75rem 2rem;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
             border: 1px solid var(--border);
             border-radius: 100px;
@@ -122,7 +128,8 @@
             transition: color 0.3s;
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             color: white;
         }
 
@@ -135,7 +142,8 @@
             border: 1px solid var(--border);
         }
 
-        .project-card img, .project-card .vid-placeholder {
+        .project-card img,
+        .project-card .vid-placeholder {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -149,7 +157,7 @@
         .project-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
@@ -163,13 +171,14 @@
         }
 
         .modal-active #canvas-container {
-    filter: blur(20px);
-    transition: filter 0.5s ease;
-}
+            filter: blur(20px);
+            transition: filter 0.5s ease;
+        }
+
         /* --- VISION ENGINE STYLING --- */
         .vision-textarea {
             width: 100%;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 2rem;
@@ -200,44 +209,62 @@
         }
 
         @keyframes pulse-slow {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.6; }
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
         }
 
         .scanline {
             position: absolute;
             width: 100%;
             height: 2px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             top: 0;
             animation: scan 4s linear infinite;
         }
 
         @keyframes scan {
-            from { top: 0%; }
-            to { top: 100%; }
+            from {
+                top: 0%;
+            }
+
+            to {
+                top: 100%;
+            }
         }
 
+        .toc-link {
+            display: block;
+            transition: color 0.3s;
+        }
+
+        .toc-link:hover {
+            color: white;
+        }
+        .modal-active {
+    overflow: hidden;
+}
     </style>
 </head>
 <!-- VIDEO MODAL -->
 <div id="video-modal" class="fixed inset-0 bg-black/80 backdrop-blur-xl hidden items-center justify-center z-[999]">
-    
+
     <div class="relative w-[90%] max-w-5xl">
-        
+
         <!-- Close Button -->
         <button id="close-modal" class="absolute -top-12 right-0 text-white text-2xl">✕</button>
-        
+
         <!-- Video Player -->
-        <iframe 
-    id="modal-iframe"
-    class="w-full h-[60vh] rounded-xl"
-    src=""
-    frameborder="0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen>
-</iframe>
-        
+        <iframe id="modal-iframe" class="w-full h-[60vh] rounded-xl" src="" frameborder="0"
+            allow="autoplay; encrypted-media" allowfullscreen>
+        </iframe>
+
     </div>
 </div>
 <!-- IMAGE GALLERY MODAL -->
@@ -255,6 +282,185 @@
     <button id="next-btn" class="absolute right-10 text-white text-4xl z-10">❯</button>
 
 </div>
+
+<!-- PRIVACY POLICY MODAL -->
+<div id="privacy-modal"
+class="fixed inset-0 bg-black/90 backdrop-blur-2xl hidden z-[1000] overflow-y-auto">
+
+    <!-- Close -->
+    <button id="close-privacy" class="absolute top-8 right-10 text-white text-3xl z-10">✕</button>
+
+    <div class="w-full h-full grid md:grid-cols-[25%_75%]">
+
+        <!-- LEFT TOC -->
+        <div class="border-r border-white/10 p-8 overflow-y-auto hidden md:block">
+            <h3 class="text-white font-bold mb-6">Contents</h3>
+            <ul class="space-y-4 text-sm text-gray-400">
+                <li><a href="#p1" class="toc-link">Introduction</a></li>
+                <li><a href="#p2" class="toc-link">Data We Collect</a></li>
+                <li><a href="#p3" class="toc-link">Usage</a></li>
+                <li><a href="#p4" class="toc-link">AI Handling</a></li>
+                <li><a href="#p5" class="toc-link">Data Sharing</a></li>
+                <li><a href="#p6" class="toc-link">Your Rights</a></li>
+                <li><a href="#p7" class="toc-link">Security</a></li>
+                <li><a href="#p8" class="toc-link">Retention</a></li>
+                <li><a href="#p9" class="toc-link">Children</a></li>
+                <li><a href="#p10" class="toc-link">Contact</a></li>
+            </ul>
+        </div>
+
+        <!-- RIGHT CONTENT -->
+        <div class="flex-1 overflow-y-auto pt-24 pb-16 px-6 md:px-16 flex justify-center">
+
+            <div class="w-full max-w-3xl text-gray-300 space-y-6 text-sm md:text-base leading-7">
+            
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Privacy Policy for Loka15 Studios Platform</h1>
+            <p class="text-gray-500">Last Updated: November 4, 2025</p>
+            
+            <section id="p1">
+            <h2 class="text-xl text-white font-semibold">1. Introduction and Legal Basis</h2>
+            <p>Welcome to Loka15 Studios ("we", "us", or "our"). We operate the Loka15 Studios Platform, an AI-powered content creation service.</p>
+            <p>We are committed to processing your personal data in compliance with the Digital Personal Data Protection (DPDP) Act, 2023 of India.</p>
+            
+            <ul class="list-disc pl-6 space-y-2 mt-3">
+            <li><strong>Data Fiduciary:</strong> Loka15 Studios</li>
+            <li><strong>Data Principal:</strong> You, the user</li>
+            <li><strong>Consent:</strong> By using our service, you provide informed consent.</li>
+            </ul>
+            </section>
+            
+            <section id="p2">
+            <h2 class="text-xl text-white font-semibold">2. Personal Data We Collect</h2>
+            
+            <h3 class="text-white mt-4 font-medium">A. Account and Identity Data</h3>
+            <ul class="list-disc pl-6">
+            <li>Name, email, username, password</li>
+            <li>Profile details and preferences</li>
+            <li>Contact and professional info</li>
+            </ul>
+            
+            <h3 class="text-white mt-4 font-medium">B. Billing and Payment Data</h3>
+            <ul class="list-disc pl-6">
+            <li>Payment details via third-party processors</li>
+            <li>Transaction history and subscription data</li>
+            </ul>
+            
+            <h3 class="text-white mt-4 font-medium">C. Content and Usage Data</h3>
+            <ul class="list-disc pl-6">
+            <li>Generated images/videos</li>
+            <li>Prompts and uploaded content</li>
+            <li>Usage analytics and chat logs</li>
+            </ul>
+            
+            <h3 class="text-white mt-4 font-medium">D. Technical Information</h3>
+            <ul class="list-disc pl-6">
+            <li>IP address, location</li>
+            <li>Device and system data</li>
+            </ul>
+            
+            <h3 class="text-white mt-4 font-medium">E. Third-Party Integrations</h3>
+            <ul class="list-disc pl-6">
+            <li>LinkedIn, Google, social logins</li>
+            </ul>
+            </section>
+            
+            <section id="p3">
+            <h2 class="text-xl text-white font-semibold">3. How We Use Your Information</h2>
+            <ul class="list-disc pl-6 space-y-2">
+            <li>Service delivery and AI generation</li>
+            <li>Billing and compliance</li>
+            <li>Platform improvement</li>
+            <li>Communication and support</li>
+            <li>Legal and fraud protection</li>
+            </ul>
+            </section>
+            
+            <section id="p4">
+            <h2 class="text-xl text-white font-semibold">4. AI Model Training and Content Handling</h2>
+            <ul class="list-disc pl-6 space-y-2">
+            <li>Your content remains your property</li>
+            <li>No training without explicit consent</li>
+            <li>Content moderation for safety</li>
+            </ul>
+            </section>
+            
+            <section id="p5">
+            <h2 class="text-xl text-white font-semibold">5. Data Sharing and Disclosure</h2>
+            <ul class="list-disc pl-6 space-y-2">
+            <li>Payment processors</li>
+            <li>Cloud infrastructure</li>
+            <li>Analytics services</li>
+            <li>Legal authorities</li>
+            <li>Business transfers</li>
+            </ul>
+            </section>
+            
+            <section id="p6">
+            <h2 class="text-xl text-white font-semibold">6. Your Rights and Duties</h2>
+            
+            <h3 class="text-white mt-4 font-medium">Your Rights</h3>
+            <ul class="list-disc pl-6">
+            <li>Access your data</li>
+            <li>Correction & erasure</li>
+            <li>Withdraw consent</li>
+            <li>Grievance redressal</li>
+            </ul>
+            
+            <h3 class="text-white mt-4 font-medium">Your Duties</h3>
+            <ul class="list-disc pl-6">
+            <li>Provide authentic information</li>
+            <li>Avoid impersonation</li>
+            <li>No false complaints</li>
+            </ul>
+            </section>
+            
+            <section id="p7">
+            <h2 class="text-xl text-white font-semibold">7. Data Security and Retention</h2>
+            
+            <h3 class="text-white mt-4 font-medium">Security</h3>
+            <ul class="list-disc pl-6">
+            <li>Encryption</li>
+            <li>Access control</li>
+            <li>Breach protocols</li>
+            </ul>
+            
+            <h3 class="text-white mt-4 font-medium">Retention</h3>
+            <ul class="list-disc pl-6">
+            <li>Starter: 30 days</li>
+            <li>Creator: 90 days</li>
+            <li>Studio: 365 days</li>
+            <li>Account data: up to 2 years</li>
+            </ul>
+            </section>
+            
+            <section id="p8">
+            <h2 class="text-xl text-white font-semibold">8. International Data Transfers</h2>
+            <p>Data may be processed outside India with DPDP compliance.</p>
+            </section>
+            
+            <section id="p9">
+            <h2 class="text-xl text-white font-semibold">9. Children's Privacy</h2>
+            <p>Not intended for users under 18.</p>
+            </section>
+            
+            <section id="p10">
+            <h2 class="text-xl text-white font-semibold">10. Contact and Updates</h2>
+            
+            <p><strong>Email:</strong> muralidhar@loka15.com</p>
+            <p><strong>Availability:</strong> Mon–Fri, 9 AM – 6 PM IST</p>
+            
+            <p class="mt-3">
+            Loka15 Studios<br>
+            Plot 120, Saradanagar<br>
+            Hyderabad, 500070, India
+            </p>
+            </section>
+            
+            </div>
+            </div>
+    </div>
+</div>
+
 <body>
 
     <div id="canvas-container"></div>
@@ -269,7 +475,7 @@
     </nav>
 
     <div class="section-container">
-        
+
         <section id="hero" class="items-center text-center">
             <div class="reveal">
                 <p class="text-xs tracking-[0.5em] text-gray-500 uppercase mb-4">Establishing a new standard</p>
@@ -292,7 +498,9 @@
                 <div class="reveal">
                     <h2 class="text-5xl font-bold mb-8">What We Do</h2>
                     <p class="text-xl text-gray-400 mb-6">
-                        Loka15 Studios is a film production company focused on storytelling through advanced AI workflows. Beyond technology, our in-house creative directors dont just guide the process—they build the heart of every story we tell.
+                        Loka15 Studios is a film production company focused on storytelling through advanced AI
+                        workflows. Beyond technology, our in-house creative directors dont just guide the process, they
+                        build the heart of every story we tell.
                     </p>
                     <!-- <div class="grid grid-cols-2 gap-8 mt-12">
                         <div>
@@ -312,27 +520,28 @@
                             <span class="text-white/20 font-bold text-4xl italic">01</span>
                             <div>
                                 <p class="font-bold">Story-First Narrative
-                                    </p>
-                                <p class="text-gray-500 text-sm">Stories lead—technology follows.
+                                </p>
+                                <p class="text-gray-500 text-sm">Stories lead and technology follows.
                                 </p>
                             </div>
                         </li>
                         <li class="flex gap-4">
                             <span class="text-white/20 font-bold text-4xl italic">02</span>
                             <div>
-                                <p class="font-bold">    
+                                <p class="font-bold">
                                     Systemized AI Workflows
-                                    </p>
-                                <p class="text-gray-500 text-sm">Precision-driven processes powering scalable creativity.
+                                </p>
+                                <p class="text-gray-500 text-sm">Precision-driven processes powering scalable
+                                    creativity.
                                 </p>
                             </div>
                         </li>
                         <li class="flex gap-4">
                             <span class="text-white/20 font-bold text-4xl italic">03</span>
                             <div>
-                                <p class="font-bold">    
+                                <p class="font-bold">
                                     Adaptive to Emerging Tech
-                                    </p>
+                                </p>
                                 <p class="text-gray-500 text-sm">Built to evolve with every new wave of innovation.</p>
                             </div>
                         </li>
@@ -343,7 +552,7 @@
 
         <section id="vision-mission" class="bg-black/60">
             <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-                
+
                 <!-- Vision -->
                 <div class="text-center md:text-left reveal">
                     <h2 class="text-5xl font-bold mb-6">Our Vision</h2>
@@ -351,7 +560,7 @@
                         To lead the future of the storytelling landscape.
                     </p>
                 </div>
-        
+
                 <!-- Mission -->
                 <div class="text-center md:text-left reveal">
                     <h2 class="text-5xl font-bold mb-6">Our Mission</h2>
@@ -359,7 +568,7 @@
                         To build versatile Indian stories at 10x the speed of traditional production houses.
                     </p>
                 </div>
-        
+
             </div>
         </section>
 
@@ -379,16 +588,16 @@
                         <video class="w-full h-full object-cover" muted loop playsinline poster="meelopost.jpeg">
                             <source src="meelo.mp4" type="video/mp4">
                         </video>
-                    
+
                         <div class="project-overlay">
                             <h3 class="text-2xl font-bold">Meelo & The Cloud Factory</h3>
                             <p class="text-gray-400 text-sm">Animation / Kids IP</p>
                         </div>
                     </div>
                     <div class="project-card reveal" id="taktak-card">
-    
+
                         <img src="1.jpeg" class="w-full h-full object-cover">
-                    
+
                         <div class="project-overlay">
                             <h3 class="text-2xl font-bold">Tak Tak Town</h3>
                             <p class="text-gray-400 text-sm">Animation / Series</p>
@@ -416,34 +625,49 @@
             </div>
         </section>
 
-        
+
 
         <section id="contact" class="items-center justify-center text-center">
             <div class="reveal">
                 <h2 class="text-7xl font-bold mb-8">Let's Create.</h2>
-                <a href="mailto:contact@loka15.com" class="text-2xl text-gray-400 hover:text-white transition-colors border-b border-white/10 pb-2">
+                <a href="mailto:contact@loka15.com"
+                    class="text-2xl text-gray-400 hover:text-white transition-colors border-b border-white/10 pb-2">
                     contact@loka15.com
                 </a>
                 <div class="mt-20 flex gap-8 justify-center opacity-40">
 
                     <a href="https://www.instagram.com/loka15studios?igsh=ZXE1M3Vhb2tleDhz" target="_blank"
-                       class="text-xs uppercase tracking-widest cursor-pointer hover:opacity-100">
-                       Instagram
+                        class="text-xs uppercase tracking-widest cursor-pointer hover:opacity-100">
+                        Instagram
                     </a>
-                
+
                     <a href="https://www.linkedin.com/company/loka15/" target="_blank"
-                       class="text-xs uppercase tracking-widest cursor-pointer hover:opacity-100">
-                       LinkedIn
+                        class="text-xs uppercase tracking-widest cursor-pointer hover:opacity-100">
+                        LinkedIn
                     </a>
-                
+
                 </div>
             </div>
         </section>
 
-        <footer class="py-12 px-10 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-600 uppercase tracking-widest border-t border-white/5 bg-black">
-            <p>© 2026 Loka15 Studios Pvt Ltd</p>
-            <p>Crafted in the Infinite Screen</p>
-        </footer>
+        <footer
+    class="py-12 px-10 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-600 uppercase tracking-widest border-t border-white/5 bg-black">
+
+    <div class="flex items-center gap-4 text-[10px] uppercase tracking-widest text-gray-600">
+
+        <p class="m-0 leading-none">
+            © 2026 Loka15 Studios Pvt Ltd
+        </p>
+    
+        <button id="open-privacy"
+            class="leading-none text-gray-600 hover:text-white transition-colors">
+            Privacy Policy
+        </button>
+    
+    </div>
+
+    <p>Crafted in the Infinite Screen</p>
+</footer>
 
     </div>
 
@@ -462,8 +686,8 @@
         container.appendChild(renderer.domElement);
 
         // Curved Imax Mesh
-        const geometry = new THREE.CylinderGeometry(10, 10, 7, 64, 1, true, -Math.PI/2.5, Math.PI/1.25);
-        
+        const geometry = new THREE.CylinderGeometry(10, 10, 7, 64, 1, true, -Math.PI / 2.5, Math.PI / 1.25);
+
         const screenShader = {
             uniforms: {
                 uTime: { value: 0 },
@@ -565,97 +789,98 @@
 
             navLinks.forEach(link => {
                 link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) {
+                const href = link.getAttribute('href');
+                if (href && href.includes(current)) {
                     link.classList.add('active');
                 }
             });
         });
 
         // --- 3. VISION AI ENGINE ---
-// --- 3. VISION AI ENGINE (Fixed Syntax) ---
-// const btnVision = document.getElementById('btn-generate-vision');
-// const visionInput = document.getElementById('vision-input');
-// const visionResult = document.getElementById('vision-result');
-// const apiKey = ""; // <--- INSERT YOUR GEMINI API KEY HERE
+        // --- 3. VISION AI ENGINE (Fixed Syntax) ---
+        // const btnVision = document.getElementById('btn-generate-vision');
+        // const visionInput = document.getElementById('vision-input');
+        // const visionResult = document.getElementById('vision-result');
+        // const apiKey = ""; // <--- INSERT YOUR GEMINI API KEY HERE
 
-// async function generateVisionWithRetry(prompt, retries = 5) {
-//     // API endpoint for Gemini 2.5 Flash
-//     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-    
-//     const systemInstruction = "You are a visionary Film Director at Loka15 Studios. The user will provide a raw, short concept. Expand it into a cinematic pitch. Provide three sections: 1. 'Logline:', 2. 'Visual Tone:', 3. 'Camera Direction:'. Keep it highly visual, punchy, and professional. Output directly in HTML using <p> and <strong> tags. Do not use markdown blocks or backticks.";
-   
-//     const payload = {
-//         contents: [{ parts: [{ text: prompt }] }],
-//         systemInstruction: { parts: [{ text: systemInstruction }] }
-//     };
-   
-//     // FIXED: The array must contain these numbers to handle retries
-//     const delays =[1000, 2000, 4000, 8000, 16000];
+        // async function generateVisionWithRetry(prompt, retries = 5) {
+        //     // API endpoint for Gemini 2.5 Flash
+        //     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
-//     for (let i = 0; i <= retries; i++) {
-//         try {
-//             const response = await fetch(url, {
-//                 method: 'POST',
-//                 headers: { 'Content-Type': 'application/json' },
-//                 body: JSON.stringify(payload)
-//             });
-           
-//             if (!response.ok) throw new Error("HTTP error " + response.status);
-           
-//             const data = await response.json();
-            
-//             // FIXED: Safer way to access the text without causing "?.?." errors
-//             if (data.candidates && data.candidates && data.candidates.content) {
-//                 return data.candidates.content.parts.text;
-//             }
-            
-//             return "No vision generated.";
-//         } catch (error) {
-//             console.error("Attempt " + (i + 1) + " failed:", error);
-//             if (i === retries) throw error;
-//             // Wait for the duration specified in the delays array
-//             await new Promise(res => setTimeout(res, delays[i]));
-//         }
-//     }
-// }
+        //     const systemInstruction = "You are a visionary Film Director at Loka15 Studios. The user will provide a raw, short concept. Expand it into a cinematic pitch. Provide three sections: 1. 'Logline:', 2. 'Visual Tone:', 3. 'Camera Direction:'. Keep it highly visual, punchy, and professional. Output directly in HTML using <p> and <strong> tags. Do not use markdown blocks or backticks.";
 
-// btnVision.addEventListener('click', async () => {
-//     const prompt = visionInput.value.trim();
-//     if (!prompt) return;
+        //     const payload = {
+        //         contents: [{ parts: [{ text: prompt }] }],
+        //         systemInstruction: { parts: [{ text: systemInstruction }] }
+        //     };
 
-//     // UI Loading State
-//     btnVision.innerText = "Synthesizing Sequence...";
-//     btnVision.disabled = true;
-//     visionResult.style.display = "none";
+        //     // FIXED: The array must contain these numbers to handle retries
+        //     const delays =[1000, 2000, 4000, 8000, 16000];
 
-//     try {
-//         const resultHtml = await generateVisionWithRetry(prompt);
-        
-//         visionResult.style.display = "block";
-//         visionResult.innerHTML = `
-//             <p class="text-xs font-bold text-purple-400 uppercase mb-4">Synthesis Complete</p>
-//             <div class="prose prose-invert max-w-none text-gray-300">
-//                 ${resultHtml}
-//             </div>
-//         `;
-        
-//         // GSAP Animation
-//         gsap.fromTo(visionResult, 
-//             { opacity: 0, y: 20 }, 
-//             { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
-//         );
+        //     for (let i = 0; i <= retries; i++) {
+        //         try {
+        //             const response = await fetch(url, {
+        //                 method: 'POST',
+        //                 headers: { 'Content-Type': 'application/json' },
+        //                 body: JSON.stringify(payload)
+        //             });
 
-//     } catch (err) {
-//         visionResult.style.display = "block";
-//         visionResult.innerHTML = `
-//             <p class="text-red-400 font-bold uppercase text-xs">Synthesis Interrupted</p>
-//             <p class="text-xs text-gray-500 mt-2">Check API Key or Network Connection.</p>
-//         `;
-//     } finally {
-//         btnVision.innerText = "Initiate Synthesis";
-//         btnVision.disabled = false;
-//     }
-// });
+        //             if (!response.ok) throw new Error("HTTP error " + response.status);
+
+        //             const data = await response.json();
+
+        //             // FIXED: Safer way to access the text without causing "?.?." errors
+        //             if (data.candidates && data.candidates && data.candidates.content) {
+        //                 return data.candidates.content.parts.text;
+        //             }
+
+        //             return "No vision generated.";
+        //         } catch (error) {
+        //             console.error("Attempt " + (i + 1) + " failed:", error);
+        //             if (i === retries) throw error;
+        //             // Wait for the duration specified in the delays array
+        //             await new Promise(res => setTimeout(res, delays[i]));
+        //         }
+        //     }
+        // }
+
+        // btnVision.addEventListener('click', async () => {
+        //     const prompt = visionInput.value.trim();
+        //     if (!prompt) return;
+
+        //     // UI Loading State
+        //     btnVision.innerText = "Synthesizing Sequence...";
+        //     btnVision.disabled = true;
+        //     visionResult.style.display = "none";
+
+        //     try {
+        //         const resultHtml = await generateVisionWithRetry(prompt);
+
+        //         visionResult.style.display = "block";
+        //         visionResult.innerHTML = `
+        //             <p class="text-xs font-bold text-purple-400 uppercase mb-4">Synthesis Complete</p>
+        //             <div class="prose prose-invert max-w-none text-gray-300">
+        //                 ${resultHtml}
+        //             </div>
+        //         `;
+
+        //         // GSAP Animation
+        //         gsap.fromTo(visionResult, 
+        //             { opacity: 0, y: 20 }, 
+        //             { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
+        //         );
+
+        //     } catch (err) {
+        //         visionResult.style.display = "block";
+        //         visionResult.innerHTML = `
+        //             <p class="text-red-400 font-bold uppercase text-xs">Synthesis Interrupted</p>
+        //             <p class="text-xs text-gray-500 mt-2">Check API Key or Network Connection.</p>
+        //         `;
+        //     } finally {
+        //         btnVision.innerText = "Initiate Synthesis";
+        //         btnVision.disabled = false;
+        //     }
+        // });
 
         // --- 4. RENDER LOOP ---
         const clock = new THREE.Clock();
@@ -668,12 +893,12 @@
         function animate() {
             requestAnimationFrame(animate);
             const time = clock.getElapsedTime();
-            
+
             screenShader.uniforms.uTime.value = time;
-            
+
             // Subtle mouse parallax
             screenMesh.rotation.y += (Math.PI + mouseX * 0.1 - screenMesh.rotation.y) * 0.05;
-            
+
             renderer.render(scene, camera);
         }
 
@@ -684,123 +909,160 @@
         });
 
         animate();
-    // VIDEO MODAL FUNCTIONALITY
-const modal = document.getElementById('video-modal');
-const iframe = document.getElementById('modal-iframe');
-const closeModal = document.getElementById('close-modal');
+        // VIDEO MODAL FUNCTIONALITY
+        const modal = document.getElementById('video-modal');
+        const iframe = document.getElementById('modal-iframe');
+        const closeModal = document.getElementById('close-modal');
 
-const cards = document.querySelectorAll('.project-card');
+        const cards = document.querySelectorAll('.project-card');
 
-cards.forEach(card => {
-    card.addEventListener('click', () => {
-        const ytLink = card.getAttribute('data-youtube');
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                const ytLink = card.getAttribute('data-youtube');
 
-        // Only run for YouTube cards
-        if (!ytLink) return;
+                // Only run for YouTube cards
+                if (!ytLink) return;
 
-        iframe.src = ytLink + "?autoplay=1";
+                iframe.src = ytLink + "?autoplay=1";
 
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
 
-        document.body.classList.add('modal-active');
+                document.body.classList.add('modal-active');
 
-        gsap.fromTo(iframe, 
-            { scale: 0.8, opacity: 0 }, 
-            { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" }
-        );
-    });
-});
+                gsap.fromTo(iframe,
+                    { scale: 0.8, opacity: 0 },
+                    { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" }
+                );
+            });
+        });
 
-closeModal.addEventListener('click', () => {
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    iframe.src = "";
+        closeModal.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            iframe.src = "";
 
-    document.body.classList.remove('modal-active'); // ✅ ADD HERE
-});
+            document.body.classList.remove('modal-active'); // ✅ ADD HERE
+        });
 
-// Close on background click
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        iframe.src = ""; // stops YouTube video
+        // Close on background click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                iframe.src = ""; // stops YouTube video
 
-        document.body.classList.remove('modal-active'); // ✅ ADD HERE
-    }
-});
+                document.body.classList.remove('modal-active'); // ✅ ADD HERE
+            }
+        });
 
-// IMAGE GALLERY LOGIC
-const galleryModal = document.getElementById('gallery-modal');
-const galleryImage = document.getElementById('gallery-image');
-const closeGallery = document.getElementById('close-gallery');
-const nextBtn = document.getElementById('next-btn');
-const prevBtn = document.getElementById('prev-btn');
+        // IMAGE GALLERY LOGIC
+        const galleryModal = document.getElementById('gallery-modal');
+        const galleryImage = document.getElementById('gallery-image');
+        const closeGallery = document.getElementById('close-gallery');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
 
-const taktakCard = document.getElementById('taktak-card');
+        const taktakCard = document.getElementById('taktak-card');
 
-// Your images here
-const images = [
-    "1.jpeg",
-    "2.jpeg",
-    "3.jpeg",
-    "4.jpeg",
-    "5.jpeg",
-    "6.jpeg",
-    "7.jpeg"
-];
+        // Your images here
+        const images = [
+            "1.jpeg",
+            "2.jpeg",
+            "3.jpeg",
+            "4.jpeg",
+            "5.jpeg",
+            "6.jpeg",
+            "7.jpeg"
+        ];
 
-let currentIndex = 0;
+        let currentIndex = 0;
 
-// OPEN
-taktakCard.addEventListener('click', () => {
-    // ❌ CLOSE VIDEO MODAL IF OPEN
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    iframe.src = "";
+        // OPEN
+        taktakCard.addEventListener('click', () => {
+            // ❌ CLOSE VIDEO MODAL IF OPEN
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            iframe.src = "";
 
-    // ✅ OPEN GALLERY
-    currentIndex = 0;
-    galleryImage.src = images[currentIndex];
+            // ✅ OPEN GALLERY
+            currentIndex = 0;
+            galleryImage.src = images[currentIndex];
 
-    galleryModal.classList.remove('hidden');
-    galleryModal.classList.add('flex');
+            galleryModal.classList.remove('hidden');
+            galleryModal.classList.add('flex');
 
+            document.body.classList.add('modal-active');
+        });
+
+        // CLOSE
+        closeGallery.addEventListener('click', () => {
+            galleryModal.classList.add('hidden');
+            galleryModal.classList.remove('flex');
+
+            document.body.classList.remove('modal-active');
+
+            // ✅ Ensure video modal is not lingering
+            iframe.src = "";
+        });
+
+        // NEXT
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            galleryImage.src = images[currentIndex];
+        });
+
+        // PREV
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            galleryImage.src = images[currentIndex];
+        });
+
+        // CLOSE on background click
+        galleryModal.addEventListener('click', (e) => {
+            if (e.target === galleryModal) {
+                galleryModal.classList.add('hidden');
+                galleryModal.classList.remove('flex');
+                document.body.classList.remove('modal-active');
+            }
+        });
+
+        // PRIVACY MODAL LOGIC
+        const privacyModal = document.getElementById('privacy-modal');
+        const openPrivacy = document.getElementById('open-privacy');
+        const closePrivacy = document.getElementById('close-privacy');
+
+        // OPEN
+        openPrivacy.addEventListener('click', () => {
+    privacyModal.classList.remove('hidden');
+    privacyModal.classList.add('flex'); // ✅ ADD THIS
     document.body.classList.add('modal-active');
 });
 
-// CLOSE
-closeGallery.addEventListener('click', () => {
-    galleryModal.classList.add('hidden');
-    galleryModal.classList.remove('flex');
-
+        // CLOSE
+        closePrivacy.addEventListener('click', () => {
+    privacyModal.classList.add('hidden');
+    privacyModal.classList.remove('flex'); // ✅ ADD THIS
     document.body.classList.remove('modal-active');
-
-    // ✅ Ensure video modal is not lingering
-    iframe.src = "";
 });
+        // CLICK OUTSIDE
+        privacyModal.addEventListener('click', (e) => {
+            if (e.target === privacyModal) {
+                privacyModal.classList.add('hidden');
+                privacyModal.classList.remove('flex');
+                document.body.classList.remove('modal-active');
+            }
+        });
 
-// NEXT
-nextBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % images.length;
-    galleryImage.src = images[currentIndex];
-});
-
-// PREV
-prevBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + images.length) % images.length;
-    galleryImage.src = images[currentIndex];
-});
-
-// CLOSE on background click
-galleryModal.addEventListener('click', (e) => {
-    if (e.target === galleryModal) {
-        galleryModal.classList.add('hidden');
-        galleryModal.classList.remove('flex');
-        document.body.classList.remove('modal-active');
-    }
-});
+        // TOC SCROLL
+        document.querySelectorAll('.toc-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
     </script>
 </body>
+
 </html>
