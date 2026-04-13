@@ -280,7 +280,7 @@
     <button id="prev-btn" class="absolute left-10 text-white text-4xl z-10">❮</button>
 
     <!-- Image -->
-    <img id="gallery-image" class="max-w-[90%] max-h-[80vh] rounded-xl shadow-2xl">
+    <div id="gallery-content" class="max-w-[90%] max-h-[80vh] flex items-center justify-center"></div>
 
     <!-- Right Arrow -->
     <button id="next-btn" class="absolute right-10 text-white text-4xl z-10">❯</button>
@@ -587,59 +587,97 @@
             </div>
         </section>
 
-        <section id="showreel">
-            <div class="max-w-7xl mx-auto w-full">
-                <div class="flex justify-between items-end mb-16 reveal">
-                    <div>
-                        <h2 class="text-6xl font-bold tracking-tighter">Our Projects</h2>
-                    </div>
-                    <p class="max-w-xs text-gray-500 text-right">
-                        These projects are now live, with several more stories already in production.
-                    </p>
-                </div>
+        <div class="max-w-7xl mx-auto w-full">
 
+            <!-- HEADER -->
+            <div class="flex justify-between items-end mb-16 reveal">
+                <div>
+                    <h2 class="text-6xl font-bold tracking-tighter">Our Projects</h2>
+                </div>
+                <p class="max-w-xs text-gray-500 text-right">
+                    These projects are now live, with several more stories already in production.
+                </p>
+            </div>
+
+            <!-- ✅ COMPLETED PROJECTS -->
+            <div class="mb-20">
                 <div class="grid md:grid-cols-2 gap-10">
+
+                    <!-- Meelo -->
                     <div class="project-card reveal" data-youtube="https://www.youtube.com/embed/MYEtNoxbRS8">
                         <video class="w-full h-full object-cover" muted loop playsinline poster="meelopost.jpeg">
                             <source src="meelo.mp4" type="video/mp4">
                         </video>
-
                         <div class="project-overlay">
                             <h3 class="text-2xl font-bold">Meelo & The Cloud Factory</h3>
                             <p class="text-gray-400 text-sm">Animation / Kids IP</p>
                         </div>
                     </div>
+
+                    <!-- Tak Tak -->
                     <div class="project-card reveal" id="taktak-card">
-
                         <img src="1.jpeg" class="w-full h-full object-cover">
-
                         <div class="project-overlay">
                             <h3 class="text-2xl font-bold">Tak Tak Town</h3>
                             <p class="text-gray-400 text-sm">Animation / Series</p>
                         </div>
                     </div>
-                     <div class="project-card reveal">
-                        <div class="vid-placeholder bg-zinc-900 border-2 border-dashed border-white/5 flex items-center justify-center">
-                            <span class="text-xs uppercase tracking-widest text-white/20">COMING SOON</span>
-                        </div>
+
+                </div>
+            </div>
+
+            <!-- 🔥 DIVIDER -->
+            <div class="flex items-center gap-6 mb-20 reveal">
+                <div class="flex-1 h-[1px] bg-white/10"></div>
+
+                <div class="flex-1 h-[1px] bg-white/10"></div>
+            </div>
+
+            <!-- 🚧 COMING SOON PROJECTS -->
+            <div>
+                <h3 class="text-2xl font-semibold text-white mb-8 tracking-wide">
+                    COMING SOON
+                </h3>
+
+                <div class="grid md:grid-cols-2 gap-10">
+
+                    <div class="project-card reveal">
+                        <img src="mitti.jpeg" class="w-full h-full object-cover">
                         <div class="project-overlay">
                             <h3 class="text-2xl font-bold">Project Mitti</h3>
                             <p class="text-gray-400 text-sm">The land remembers every fall</p>
                         </div>
                     </div>
-                    <!--<div class="project-card reveal" style="transition-delay: 0.1s">
-                        <div class="vid-placeholder bg-zinc-800 border-2 border-dashed border-white/5 flex items-center justify-center">
-                            <span class="text-xs uppercase tracking-widest text-white/20">Untitled Beta [In Prod]</span>
-                        </div>
+
+                    <div class="project-card reveal">
+                        <img src="kurukshetra.jpeg" class="w-full h-full object-cover">
                         <div class="project-overlay">
-                            <h3 class="text-2xl font-bold">Project Beta</h3>
-                            <p class="text-gray-400 text-sm">Confidential Development</p>
+                            <h3 class="text-2xl font-bold">Kurukshetra</h3>
+                            <p class="text-gray-400 text-sm">The Zero Hour</p>
                         </div>
-                    </div> -->
+                    </div>
+
+                    <div class="project-card reveal">
+                        <img src="Dust and divinity.jpeg" class="w-full h-full object-cover">
+                        <div class="project-overlay">
+                            <h3 class="text-2xl font-bold">Dust & Divinity</h3>
+                            <p class="text-gray-400 text-sm">Five Nations. One Moon. Zero common sense</p>
+                        </div>
+                    </div>
+
+                    <div class="project-card reveal">
+                        <img src="lost in Summer.jpeg" class="w-full h-full object-cover">
+                        <div class="project-overlay">
+                            <h3 class="text-2xl font-bold">lost in Summer</h3>
+                            <p class="text-gray-400 text-sm">One summer. Endless Worlds</p>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
-        </section>
 
+        </div>
 
 
         <section id="contact" class="items-center justify-center text-center">
@@ -972,7 +1010,7 @@
 
         // IMAGE GALLERY LOGIC
         const galleryModal = document.getElementById('gallery-modal');
-        const galleryImage = document.getElementById('gallery-image');
+        const galleryContent = document.getElementById('gallery-content');
         const closeGallery = document.getElementById('close-gallery');
         const nextBtn = document.getElementById('next-btn');
         const prevBtn = document.getElementById('prev-btn');
@@ -980,17 +1018,41 @@
         const taktakCard = document.getElementById('taktak-card');
 
         // Your images here
-        const images = [
-            "1.jpeg",
-            "2.jpeg",
-            "3.jpeg",
-            "4.jpeg",
-            "5.jpeg",
-            "6.jpeg",
-            "7.jpeg"
+        const media = [
+            { type: "image", src: "1.jpeg" },
+            { type: "image", src: "2.jpeg" },
+            { type: "image", src: "3.jpeg" },
+
+            { type: "video", src: "taktak.mp4" }, // <-- add your video file here
+
+            { type: "image", src: "4.jpeg" },
+            { type: "image", src: "5.jpeg" },
+            { type: "image", src: "6.jpeg" },
+            { type: "image", src: "7.jpeg" }
         ];
 
         let currentIndex = 0;
+
+        function renderMedia(index) {
+            const item = media[index];
+            galleryContent.innerHTML = "";
+
+            if (item.type === "image") {
+                const img = document.createElement("img");
+                img.src = item.src;
+                img.className = "max-w-full max-h-[80vh] rounded-xl shadow-2xl";
+                galleryContent.appendChild(img);
+            }
+
+            if (item.type === "video") {
+                const video = document.createElement("video");
+                video.src = item.src;
+                video.controls = true;
+                video.autoplay = true;
+                video.className = "max-w-full max-h-[80vh] rounded-xl shadow-2xl";
+                galleryContent.appendChild(video);
+            }
+        }
 
         // OPEN
         taktakCard.addEventListener('click', () => {
@@ -1001,7 +1063,7 @@
 
             // ✅ OPEN GALLERY
             currentIndex = 0;
-            galleryImage.src = images[currentIndex];
+            renderMedia(currentIndex);
 
             galleryModal.classList.remove('hidden');
             galleryModal.classList.add('flex');
@@ -1022,14 +1084,14 @@
 
         // NEXT
         nextBtn.addEventListener('click', () => {
-            currentIndex = (currentIndex + 1) % images.length;
-            galleryImage.src = images[currentIndex];
+            currentIndex = (currentIndex + 1) % media.length;
+            renderMedia(currentIndex);
         });
 
         // PREV
         prevBtn.addEventListener('click', () => {
-            currentIndex = (currentIndex - 1 + images.length) % images.length;
-            galleryImage.src = images[currentIndex];
+            currentIndex = (currentIndex - 1 + media.length) % media.length;
+            renderMedia(currentIndex);
         });
 
         // CLOSE on background click
